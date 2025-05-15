@@ -127,4 +127,10 @@ export default defineConfig([globalIgnores([
 	rules: {
 		'import/no-default-export': 'off', // Allow default export for ESLint config
 	},
+}, {
+	// Allow uuid import in the id-generator file
+	files: ['**/src/utils/id-generator.ts'],
+	rules: {
+		'no-restricted-imports': 'off',
+	},
 }]);

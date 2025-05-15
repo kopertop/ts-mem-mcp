@@ -8,7 +8,10 @@
       "Bash(mcp add tool:*)",
       "Bash(npm run build:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(npm run test:*)"
+      "Bash(npm run test:*)",
+      "Bash(npm run lint)",
+      "Bash(mv:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

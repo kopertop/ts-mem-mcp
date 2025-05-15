@@ -2,7 +2,7 @@
  * Memory models for the TypeScript Memory MCP server
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { generateId } from '../utils/id-generator.js';
 
 export interface MemoryEmbedding {
   vector: number[];
@@ -44,21 +44,21 @@ export interface MemorySearchOptions {
 }
 
 export const createMemory = (
-  content: string, 
-  userId: string,
-  sessionId?: string,
-  agentId?: string,
-  metadata?: MemoryMetadata
+	content: string, 
+	userId: string,
+	sessionId?: string,
+	agentId?: string,
+	metadata?: MemoryMetadata,
 ): Memory => {
-  const now = new Date();
-  return {
-    id: uuidv4(),
-    userId,
-    sessionId,
-    agentId,
-    content,
-    metadata,
-    createdAt: now,
-    updatedAt: now
-  };
+	const now = new Date();
+	return {
+		id: generateId(),
+		userId,
+		sessionId,
+		agentId,
+		content,
+		metadata,
+		createdAt: now,
+		updatedAt: now,
+	};
 };
