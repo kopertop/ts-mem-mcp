@@ -1,6 +1,6 @@
 # ts-mem-mcp
 
-A Model Context Protocol (MCP) server built with mcp-framework.
+A TypeScript-based Model Context Protocol (MCP) server that implements the OpenMemory specification. It provides a memory layer for AI applications with tools for storing and retrieving memories, designed to work with any MCP-compatible client like Claude Desktop.
 
 ## Quick Start
 
@@ -11,6 +11,80 @@ npm install
 # Build the project
 npm run build
 
+# Start the server
+npm run start
+```
+
+## Features
+
+- Persistent memory across conversations and sessions
+- Semantic search using vector embeddings
+- Local storage of all memories (nothing sent to external servers)
+- Compatible with any MCP client (Claude Desktop, etc.)
+- User and session-based memory segregation
+
+## Available Memory Tools
+
+### add_memory
+
+Stores a new memory entry for later retrieval.
+
+**Parameters:**
+- `content`: Text content to store as a memory (required)
+- `userId`: User identifier for the memory (required)
+- `sessionId`: Session identifier (optional)
+- `agentId`: Agent identifier (optional)
+- `metadata`: Additional metadata to store with the memory (optional)
+
+**Example:**
+```json
+{
+  "content": "My favorite color is blue",
+  "userId": "user-123",
+  "sessionId": "session-456",
+  "metadata": {
+    "category": "preferences",
+    "importance": "high"
+  }
+}
+```
+
+### search_memory
+
+Searches for memories based on semantic similarity to the query.
+
+**Parameters:**
+- `query`: The search query text to find relevant memories (required)
+- `userId`: User identifier to search memories for (required)
+- `sessionId`: Session identifier to filter memories by (optional)
+- `agentId`: Agent identifier to filter memories by (optional)
+- `threshold`: Similarity threshold between 0 and 1 (default: 0.7) (optional)
+- `limit`: Maximum number of results to return (default: 10) (optional)
+
+**Example:**
+```json
+{
+  "query": "What is my favorite color?",
+  "userId": "user-123",
+  "threshold": 0.6,
+  "limit": 5
+}
+```
+
+### delete_memory
+
+Deletes a specific memory by ID.
+
+**Parameters:**
+- `memoryId`: ID of the memory to delete (required)
+- `userId`: User identifier for verification (required)
+
+**Example:**
+```json
+{
+  "memoryId": "d8e8fca2-dc0f-4331-819e-bade0fc66666",
+  "userId": "user-123"
+}
 ```
 
 ## Project Structure
@@ -18,85 +92,18 @@ npm run build
 ```
 ts-mem-mcp/
 ├── src/
-│   ├── tools/        # MCP Tools
-│   │   └── ExampleTool.ts
-│   └── index.ts      # Server entry point
+│   ├── db/              # Database connection and operations
+│   ├── models/          # Memory data models
+│   ├── tools/           # MCP Tools implementation
+│   │   ├── AddMemoryTool.ts
+│   │   ├── SearchMemoryTool.ts
+│   │   └── DeleteMemoryTool.ts
+│   ├── utils/           # Helper utilities 
+│   │   ├── embeddings.ts    # Vector embedding functionality
+│   │   └── memory-service.ts # Memory service layer
+│   └── index.ts         # Server entry point
 ├── package.json
 └── tsconfig.json
-```
-
-## Adding Components
-
-The project comes with an example tool in `src/tools/ExampleTool.ts`. You can add more tools using the CLI:
-
-```bash
-# Add a new tool
-mcp add tool my-tool
-
-# Example tools you might create:
-mcp add tool data-processor
-mcp add tool api-client
-mcp add tool file-handler
-```
-
-## Tool Development
-
-Example tool structure:
-
-```typescript
-import { MCPTool } from "mcp-framework";
-import { z } from "zod";
-
-interface MyToolInput {
-  message: string;
-}
-
-class MyTool extends MCPTool<MyToolInput> {
-  name = "my_tool";
-  description = "Describes what your tool does";
-
-  schema = {
-    message: {
-      type: z.string(),
-      description: "Description of this input parameter",
-    },
-  };
-
-  async execute(input: MyToolInput) {
-    // Your tool logic here
-    return `Processed: ${input.message}`;
-  }
-}
-
-export default MyTool;
-```
-
-## Publishing to npm
-
-1. Update your package.json:
-   - Ensure `name` is unique and follows npm naming conventions
-   - Set appropriate `version`
-   - Add `description`, `author`, `license`, etc.
-   - Check `bin` points to the correct entry file
-
-2. Build and test locally:
-   ```bash
-   npm run build
-   npm link
-   ts-mem-mcp  # Test your CLI locally
-   ```
-
-3. Login to npm (create account if necessary):
-   ```bash
-   npm login
-   ```
-
-4. Publish your package:
-   ```bash
-   npm publish
-   ```
-
-After publishing, users can add it to their claude desktop client (read below) or run it with npx
 ```
 
 ## Using with Claude Desktop
@@ -112,6 +119,9 @@ Add this configuration to your Claude Desktop config file:
 {
   "mcpServers": {
     "ts-mem-mcp": {
+      "name": "TypeScript Memory MCP",
+      "description": "Local memory infrastructure that provides persistent memory across sessions",
+      "enabled": true,
       "command": "node",
       "args":["/absolute/path/to/ts-mem-mcp/dist/index.js"]
     }
@@ -121,15 +131,15 @@ Add this configuration to your Claude Desktop config file:
 
 ### After Publishing
 
-Add this configuration to your Claude Desktop config file:
-
-**MacOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
+After publishing to npm, users can add this configuration to their Claude Desktop config file:
 
 ```json
 {
   "mcpServers": {
     "ts-mem-mcp": {
+      "name": "TypeScript Memory MCP",
+      "description": "Local memory infrastructure that provides persistent memory across sessions",
+      "enabled": true,
       "command": "npx",
       "args": ["ts-mem-mcp"]
     }
@@ -141,9 +151,14 @@ Add this configuration to your Claude Desktop config file:
 
 1. Make changes to your tools
 2. Run `npm run build` to compile
-3. The server will automatically load your tools on startup
+3. Run `npm run start` to start the server
+4. Configure Claude Desktop to use your server
+
+## Data Storage
+
+All memories are stored locally in a SQLite database located at `~/.ts-mem-mcp/memory.db`. No data is sent to external servers.
 
 ## Learn More
 
-- [MCP Framework Github](https://github.com/QuantGeekDev/mcp-framework)
-- [MCP Framework Docs](https://mcp-framework.com)
+- [MCP Framework Docs](https://www.npmjs.com/package/mcp-framework)
+- [Claude Desktop Documentation](https://docs.anthropic.com/en/docs/claude-desktop)
