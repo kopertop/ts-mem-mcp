@@ -3,6 +3,7 @@
   "name": "ts-mem-mcp",
   "version": "0.0.1",
   "description": "TypeScript Memory MCP server",
+  "license": "Unlicense",
   "type": "module",
   "bin": {
     "ts-mem-mcp": "./dist/index.js"
