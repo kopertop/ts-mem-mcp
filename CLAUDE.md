@@ -93,19 +93,17 @@ The following tasks need to be completed to implement the memory system:
 - **Purpose**: Store new memory entries
 - **Parameters**:
   - `content`: Text content to store (required)
-  - `userId`: User identifier (required)
   - `sessionId`: Session identifier (optional)
   - `agentId`: Agent identifier (optional)
-  - `metadata`: Additional metadata (optional)
+  - `metadata`: Additional metadata as a key-value object (optional)
 
 ### SearchMemoryTool
 - **Purpose**: Retrieve relevant memories based on semantic search
 - **Parameters**:
   - `query`: Search query text (required)
-  - `userId`: User identifier (required)
   - `sessionId`: Session identifier (optional)
   - `agentId`: Agent identifier (optional)
-  - `filters`: Metadata filters (optional)
+  - `filters`: Metadata filters as a key-value object (optional)
   - `threshold`: Similarity threshold (optional)
   - `limit`: Maximum number of results (optional)
 
@@ -113,7 +111,6 @@ The following tasks need to be completed to implement the memory system:
 - **Purpose**: Remove specific memories
 - **Parameters**:
   - `memoryId`: ID of memory to delete (required)
-  - `userId`: User identifier (required)
 
 ## Integration with Claude Desktop
 

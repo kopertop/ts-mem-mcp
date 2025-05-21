@@ -31,7 +31,6 @@ Stores a new memory entry for later retrieval.
 
 **Parameters:**
 - `content`: Text content to store as a memory (required)
-- `userId`: User identifier for the memory (required)
 - `sessionId`: Session identifier (optional)
 - `agentId`: Agent identifier (optional)
 - `metadata`: Additional metadata to store with the memory (optional)
@@ -40,7 +39,6 @@ Stores a new memory entry for later retrieval.
 ```json
 {
   "content": "My favorite color is blue",
-  "userId": "user-123",
   "sessionId": "session-456",
   "metadata": {
     "category": "preferences",
@@ -55,7 +53,6 @@ Searches for memories based on semantic similarity to the query.
 
 **Parameters:**
 - `query`: The search query text to find relevant memories (required)
-- `userId`: User identifier to search memories for (required)
 - `sessionId`: Session identifier to filter memories by (optional)
 - `agentId`: Agent identifier to filter memories by (optional)
 - `threshold`: Similarity threshold between 0 and 1 (default: 0.7) (optional)
@@ -65,7 +62,6 @@ Searches for memories based on semantic similarity to the query.
 ```json
 {
   "query": "What is my favorite color?",
-  "userId": "user-123",
   "threshold": 0.6,
   "limit": 5
 }
@@ -77,13 +73,11 @@ Deletes a specific memory by ID.
 
 **Parameters:**
 - `memoryId`: ID of the memory to delete (required)
-- `userId`: User identifier for verification (required)
 
 **Example:**
 ```json
 {
   "memoryId": "d8e8fca2-dc0f-4331-819e-bade0fc66666",
-  "userId": "user-123"
 }
 ```
 

@@ -27,25 +27,23 @@ export class MemoryService {
 
 	public async addMemory(
 		content: string,
-		userId: string,
 		sessionId?: string,
 		agentId?: string,
 		metadata?: MemoryMetadata,
 	): Promise<Memory> {
 		// Create the memory object
-		const memory = createMemory(content, userId, sessionId, agentId, metadata);
-    
+		const memory = createMemory(content, sessionId, agentId, metadata);
+
 		// Generate embedding for the content
 		try {
 			memory.embedding = await this.embeddings.getEmbedding(content);
 		} catch (error) {
-			console.error('Failed to generate embedding:', error);
 			// Continue without embedding if it fails
 		}
-    
+
 		// Store in database
 		await this.db.addMemory(memory);
-    
+
 		return memory;
 	}
 
@@ -55,11 +53,11 @@ export class MemoryService {
 	): Promise<MemorySearchResult[]> {
 		// Get memories matching filter criteria
 		const memories = await this.db.getAllMemories(options.filter);
-    
+
 		if (memories.length === 0) {
 			return [];
 		}
-    
+
 		// Search for similar memories
 		return this.embeddings.searchSimilar(query, memories, {
 			threshold: options.threshold,

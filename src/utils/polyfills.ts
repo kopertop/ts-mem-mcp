@@ -106,7 +106,4 @@ export function setupPolyfills() {
 	if (typeof globalThis.fetch === 'undefined') {
 		globalThis.fetch = nodeFetch as any;
 	}
-
-	// Log quietly without console output
-	// console.log('Web API polyfills have been set up');
 }

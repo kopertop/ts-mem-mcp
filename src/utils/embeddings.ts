@@ -27,32 +27,21 @@ export class EmbeddingService {
 
 	public async initialize(): Promise<void> {
 		if (this.initialized) return;
-    
-		try {
-			this.pipeline = await pipeline('feature-extraction', this.modelName);
-			this.initialized = true;
-			console.log(`Embedding model ${this.modelName} initialized with dimensions: ${this.dimensions}`);
-		} catch (error) {
-			console.error('Failed to initialize embedding model:', error);
-			throw error;
-		}
+
+		this.pipeline = await pipeline('feature-extraction', this.modelName);
+		this.initialized = true;
 	}
 
 	public async getEmbedding(text: string): Promise<MemoryEmbedding> {
 		await this.initialize();
 
-		try {
-			const result = await this.pipeline(text, { pooling: 'mean', normalize: true });
-			const vector = Array.from(result.data).map(value => Number(value));
-      
-			return {
-				vector,
-				dimensions: this.dimensions,
-			};
-		} catch (error) {
-			console.error('Error generating embedding:', error);
-			throw error;
-		}
+		const result = await this.pipeline(text, { pooling: 'mean', normalize: true });
+		const vector = Array.from(result.data).map(value => Number(value));
+
+		return {
+			vector,
+			dimensions: this.dimensions,
+		};
 	}
 
 	public calculateSimilarity(embedding1: number[], embedding2: number[]): number {
@@ -76,8 +65,8 @@ export class EmbeddingService {
 	}
 
 	public async searchSimilar(
-		query: string, 
-		memories: Memory[], 
+		query: string,
+		memories: Memory[],
 		options: { threshold?: number; limit?: number; } = {},
 	): Promise<{ memory: Memory; similarity: number }[]> {
 		const queryEmbedding = await this.getEmbedding(query);
@@ -90,10 +79,10 @@ export class EmbeddingService {
 		// Calculate similarity for each memory
 		const results = memoriesWithEmbeddings.map(memory => {
 			const similarity = this.calculateSimilarity(
-				queryEmbedding.vector, 
-        memory.embedding!.vector,
+				queryEmbedding.vector,
+				memory.embedding!.vector,
 			);
-      
+
 			return { memory, similarity };
 		});
 

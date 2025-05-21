@@ -5,7 +5,6 @@ import { MemoryService } from '../utils/memory-service.js';
 
 interface SearchMemoryInput {
   query: string;
-  userId: string;
   sessionId?: string;
   agentId?: string;
   threshold?: number;
@@ -20,10 +19,6 @@ class SearchMemoryTool extends MCPTool<SearchMemoryInput> {
 		query: {
 			type: z.string(),
 			description: 'The search query text to find relevant memories',
-		},
-		userId: {
-			type: z.string(),
-			description: 'User identifier to search memories for',
 		},
 		sessionId: {
 			type: z.string().optional(),
@@ -49,7 +44,6 @@ class SearchMemoryTool extends MCPTool<SearchMemoryInput> {
 			await memoryService.initialize();
 
 			const filter = {
-				userId: input.userId,
 				sessionId: input.sessionId,
 				agentId: input.agentId,
 			};
@@ -75,7 +69,6 @@ class SearchMemoryTool extends MCPTool<SearchMemoryInput> {
 				results,
 			};
 		} catch (error) {
-			console.error('Error searching memories:', error);
 			return {
 				success: false,
 				error: error instanceof Error ? error.message : String(error),

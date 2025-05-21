@@ -4,11 +4,10 @@ import { z } from 'zod';
 import { MemoryService } from '../utils/memory-service.js';
 
 interface AddMemoryInput {
-  content: string;
-  userId: string;
-  sessionId?: string;
-  agentId?: string;
-  metadata?: Record<string, string | number | boolean>;
+	content: string;
+	sessionId?: string;
+	agentId?: string;
+	metadata?: Record<string, string | number | boolean>;
 }
 
 class AddMemoryTool extends MCPTool<AddMemoryInput> {
@@ -19,10 +18,6 @@ class AddMemoryTool extends MCPTool<AddMemoryInput> {
 		content: {
 			type: z.string(),
 			description: 'Text content to store as a memory',
-		},
-		userId: {
-			type: z.string(),
-			description: 'User identifier for the memory',
 		},
 		sessionId: {
 			type: z.string().optional(),
@@ -45,7 +40,6 @@ class AddMemoryTool extends MCPTool<AddMemoryInput> {
 
 			const memory = await memoryService.addMemory(
 				input.content,
-				input.userId,
 				input.sessionId,
 				input.agentId,
 				input.metadata,
@@ -57,7 +51,6 @@ class AddMemoryTool extends MCPTool<AddMemoryInput> {
 				message: 'Memory stored successfully',
 			};
 		} catch (error) {
-			console.error('Error adding memory:', error);
 			return {
 				success: false,
 				error: error instanceof Error ? error.message : String(error),

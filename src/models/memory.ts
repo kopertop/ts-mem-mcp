@@ -5,47 +5,44 @@
 import { generateId } from '../utils/id-generator.js';
 
 export interface MemoryEmbedding {
-  vector: number[];
-  dimensions: number;
+	vector: number[];
+	dimensions: number;
 }
 
 export interface MemoryMetadata {
-  [key: string]: string | number | boolean;
+	[key: string]: string | number | boolean;
 }
 
 export interface Memory {
-  id: string;
-  userId: string;
-  sessionId?: string;
-  agentId?: string;
-  content: string;
-  embedding?: MemoryEmbedding;
-  metadata?: MemoryMetadata;
-  createdAt: Date;
-  updatedAt: Date;
+	id: string;
+	sessionId?: string;
+	agentId?: string;
+	content: string;
+	embedding?: MemoryEmbedding;
+	metadata?: MemoryMetadata;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export interface MemoryFilter {
-  userId?: string;
-  sessionId?: string;
-  agentId?: string;
-  metadata?: Partial<MemoryMetadata>;
+	sessionId?: string;
+	agentId?: string;
+	metadata?: Partial<MemoryMetadata>;
 }
 
 export interface MemorySearchResult {
-  memory: Memory;
-  similarity: number;
+	memory: Memory;
+	similarity: number;
 }
 
 export interface MemorySearchOptions {
-  threshold?: number;  // Similarity threshold (0-1)
-  limit?: number;      // Maximum number of results
-  filter?: MemoryFilter;
+	threshold?: number;  // Similarity threshold (0-1)
+	limit?: number;      // Maximum number of results
+	filter?: MemoryFilter;
 }
 
 export const createMemory = (
-	content: string, 
-	userId: string,
+	content: string,
 	sessionId?: string,
 	agentId?: string,
 	metadata?: MemoryMetadata,
@@ -53,7 +50,6 @@ export const createMemory = (
 	const now = new Date();
 	return {
 		id: generateId(),
-		userId,
 		sessionId,
 		agentId,
 		content,

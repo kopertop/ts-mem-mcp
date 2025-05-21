@@ -17,20 +17,19 @@ async function initialize() {
 		const db = Database.getInstance();
 		await db.initialize();
 		// Database initialized successfully
-    
+
 		// Initialize the embedding service
 		const embeddingService = EmbeddingService.getInstance();
 		await embeddingService.initialize();
 		// Embedding service initialized successfully
-    
+
 		// Initialize the memory service
 		const memoryService = MemoryService.getInstance();
 		await memoryService.initialize();
 		// Memory service initialized successfully
-    
+
 		return true;
 	} catch (error) {
-		console.error('Failed to initialize server components:', error);
 		return false;
 	}
 }
@@ -40,17 +39,16 @@ async function initialize() {
  */
 async function startServer() {
 	// Starting TypeScript Memory MCP Server...
-  
+
 	// First initialize all components
 	const initialized = await initialize();
 	if (!initialized) {
-		console.error('Failed to initialize required components. Exiting.');
 		process.exit(1);
 	}
-  
+
 	// Create the MCP server instance - tools will be loaded automatically
 	const server = new MCPServer();
-  
+
 	// Start the server - this will load the tools from the src/tools directory
 	await server.start();
 	// Server started successfully
@@ -58,6 +56,5 @@ async function startServer() {
 
 // Start the server
 startServer().catch(error => {
-	console.error('Failed to start server:', error);
 	process.exit(1);
 });
